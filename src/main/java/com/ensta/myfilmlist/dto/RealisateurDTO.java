@@ -1,16 +1,16 @@
-
-package com.ensta.myfilmlist.model;
+package com.ensta.myfilmlist.dto;
 
 import java.time.LocalDate;
+
 import java.util.List;
 
-public class Realisateur {
+public class RealisateurDTO {
 
     private long id;
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
-    private List<Film> filmRealises;
+    private List<FilmDTO> filmRealises;
     private boolean celebre;
 
     public long getId() {
@@ -45,11 +45,11 @@ public class Realisateur {
         this.dateNaissance = dateNaissance;
     }
 
-    public List<Film> getFilmsRealises() {
+    public List<FilmDTO> getFilmRealises() {
         return filmRealises;
     }
 
-    public void setFilmsRealises(List<Film> filmRealises) {
+    public void setFilmRealises(List<FilmDTO> filmRealises) {
         this.filmRealises = filmRealises;
     }
 
@@ -59,5 +59,10 @@ public class Realisateur {
 
     public void setCelebre(boolean celebre) {
         this.celebre = celebre;
+    }
+
+    @Override
+    public String toString() {
+        return prenom + " " + nom + " (né le " + dateNaissance + "), célèbre = " + celebre;
     }
 }

@@ -10,6 +10,7 @@ public class FilmDTO {
 	private String titre;
 
 	private int duree;
+	private RealisateurDTO realisateur;
 
 	public long getId() {
 		return id;
@@ -35,9 +36,17 @@ public class FilmDTO {
 		this.duree = duree;
 	}
 
+	public RealisateurDTO getRealisateur() {
+        return realisateur;
+    }
+
+    public void setRealisateur(RealisateurDTO realisateur) {
+        this.realisateur = realisateur;
+    }
+	
 	@Override
-	public String toString() {
-		return "FilmDTO [id=" + id + ", titre=" + titre + ", duree=" + duree + "]";
-	}
+public String toString() {
+    return "FilmDTO [id=" + id + ", titre=" + titre + ", duree=" + duree + ", realisateur=" + realisateur + "]";
+}
 
 }

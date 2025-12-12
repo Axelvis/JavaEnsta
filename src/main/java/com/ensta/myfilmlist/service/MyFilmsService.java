@@ -1,35 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
-
 package com.ensta.myfilmlist.service;
 
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
+import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.dto.RealisateurDTO;
 
-/**
- *
- * @author Axel
- */
+import java.util.List;
+import java.util.Optional;
 
 public interface MyFilmsService {
 
-    /**
-     * Met à jour le statut "celebre" de l'utilisateur en fonction de la liste des films qu'il a réalisés.
-     * * @param realisateur le réalisateur à mettre à jour (non null)
-     * @return le Realisateur mis à jour avec son statut "celebre"
-     * @throws ServiceException en cas d'erreur
-     */
     Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException;
+    long calculerDureeTotale(List<Film> films);
+    double calculerNoteMoyenne(double[] notes);
+    List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException;
+    
+    List<FilmDTO> findAllFilms() throws ServiceException;
+    FilmDTO findFilmById(long id) throws ServiceException;
 
-    /**
-     * Calcule la durée totale d'une liste de films.
-     *
-     * @param films liste non nulle de films non nuls
-     * @return la durée totale (en minutes) des films
-     * @throws ServiceException en cas d'erreur
-     */
-    int calculerDureeTotale(java.util.List<com.ensta.myfilmlist.model.Film> films) throws ServiceException;
+    FilmDTO createFilm(FilmForm form) throws ServiceException;
+    List<Realisateur> findAllRealisateurs() throws ServiceException;
+    Optional<Realisateur> findRealisateurById(long id) throws ServiceException;
+    RealisateurDTO findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
+    void deleteFilm(long id) throws ServiceException;
+
+    RealisateurDTO createRealisateur(RealisateurDTO realisateur) throws ServiceException;
+    RealisateurDTO findRealisateurDTOById(long id) throws ServiceException;
 
 }
