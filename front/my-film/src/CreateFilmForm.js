@@ -52,9 +52,21 @@ export default function CreateFilmForm(props) {
     };
 
     return (
-        <div style={{ padding: '20px', border: '1px solid #ddd', margin: '20px', borderRadius: '8px' }}>
-            {!props.film && <h3>Ajouter un film</h3>}
-            <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', maxWidth: '400px' }}>
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            padding: '20px'
+        }}>
+            <div style={{ 
+                padding: '20px', 
+                border: '1px solid #ddd', 
+                borderRadius: '8px',
+                width: '100%',
+                maxWidth: '400px'
+            }}>
+                {!props.film && <h3 style={{ textAlign: 'center' }}>Ajouter un film</h3>}
+                <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
                 <TextField 
                     label="Titre" 
                     variant="outlined" 
@@ -89,6 +101,7 @@ export default function CreateFilmForm(props) {
                     {props.film ? 'Modifier' : 'Créer'}
                 </Button>
             </div>
+        </div>
         </div>
     );
 }
