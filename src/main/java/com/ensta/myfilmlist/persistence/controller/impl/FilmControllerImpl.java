@@ -1,23 +1,21 @@
 package com.ensta.myfilmlist.persistence.controller.impl;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable; 
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus; 
-import com.ensta.myfilmlist.form.FilmForm; 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.persistence.controller.FilmController;
 import com.ensta.myfilmlist.service.MyFilmsService;
-
-import java.util.List;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/film")

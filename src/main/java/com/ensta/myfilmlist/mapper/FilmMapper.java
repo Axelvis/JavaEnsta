@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.mapper.RealisateurDTOMapper;
 
 /**
  * Effectue les conversions des Films entre les couches de l'application.

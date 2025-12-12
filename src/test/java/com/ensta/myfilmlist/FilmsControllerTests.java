@@ -123,17 +123,23 @@ public class FilmsControllerTests {
      * Teste le cas où le réalisateur n'existe pas (Doit lever une exception).
      */
     @Test
-    public void createFilmTest_RealisateurNotFound() {
+    public void createFilmTest_RealisateurNotFound() throws ServiceException {
+        // 1. Données d'entrée
         FilmForm form = new FilmForm();
-        form.setRealisateurId(99L); // ID inexistant
+        form.setTitre("Titre Valide"); 
+        form.setDuree(120);
+        form.setRealisateurId(99L); 
 
+        // 2. Mock : Le réalisateur 99 n'existe pas
         when(realisateurDAO.findById(99L)).thenReturn(Optional.empty());
 
+        // 3. Exécution & Vérification : doit lever une ServiceException
         assertThrows(ServiceException.class, () -> {
             myFilmsService.createFilm(form);
         });
         
-        // Vérifie qu'on n'a jamais essayé de sauvegarder le film
-        verify(filmDAO, never()).create(any());
+        // 4. Vérification : on s'assure que le save n'a JAMAIS été appelé
+        verify(realisateurDAO).findById(99L);
+        verify(filmDAO, never()).create(any(Film.class));
     }
 }

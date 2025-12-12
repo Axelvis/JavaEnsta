@@ -1,7 +1,8 @@
 package com.ensta.myfilmlist;
 
-import com.ensta.myfilmlist.persistence.ConnectionManager;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.ensta.myfilmlist.persistence.ConnectionManager;
 
 /**
  * Classe principale pour executer un traitement et s'arreter ensuite.
@@ -28,6 +29,9 @@ public class MyfilmlistMain {
 
 		System.out.println("--------------------");
 		myFilmListTests.calculerDureeTotaleTest();
+		
+		// Close the context to avoid resource leak
+		context.close();
 
 		System.out.println("--------------------");
 		myFilmListTests.calculerNoteMoyenneTest();

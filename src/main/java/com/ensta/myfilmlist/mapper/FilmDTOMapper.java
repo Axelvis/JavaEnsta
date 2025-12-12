@@ -1,9 +1,7 @@
 package com.ensta.myfilmlist.mapper;
 
 import com.ensta.myfilmlist.dto.FilmDTO;
-import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.model.Realisateur;
 
 public class FilmDTOMapper {
 
