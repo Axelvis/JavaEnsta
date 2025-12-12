@@ -29,7 +29,7 @@ export default function FilmCard(props) {
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                     {/* Affiche le réalisateur si l'objet existe */}
-                    Réalisateur ID: {film.realisateurId ? film.realisateurId : 'Inconnu'}
+                    Réalisateur: {film.realisateur ? `${film.realisateur.prenom} ${film.realisateur.nom}` : 'Inconnu'}
                 </Typography>
 
                 <div style={{ marginTop: '10px' }}>

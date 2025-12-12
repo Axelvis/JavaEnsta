@@ -20,7 +20,7 @@ export default function CreateFilmForm(props) {
         if (props.film) {
             setTitre(props.film.titre);
             setDuree(props.film.duree);
-            setRealisateurId(props.film.realisateurId || '');
+            setRealisateurId(props.film.realisateur ? props.film.realisateur.id : '');
         } else {
             setTitre('');
             setDuree('');
@@ -86,7 +86,7 @@ export default function CreateFilmForm(props) {
                 </FormControl>
 
                 <Button variant="contained" onClick={handleSubmit}>
-                    Créer
+                    {props.film ? 'Modifier' : 'Créer'}
                 </Button>
             </div>
         </div>
