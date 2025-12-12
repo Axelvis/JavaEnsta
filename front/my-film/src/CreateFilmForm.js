@@ -6,7 +6,7 @@ import {
 import { getAllRealisateurs, postRealisateur } from './api/RealisateurApi';
 
 export default function CreateFilmForm(props) {
-    const initialData = props.initialValues || {};
+    const initialData = props.film || props.initialValues || {};
     const [titre, setTitre] = useState(initialData.titre || '');
     const [duree, setDuree] = useState(initialData.duree || '');
     const [realisateurId, setRealisateurId] = useState(initialData.realisateur?.id || '');
@@ -28,6 +28,15 @@ export default function CreateFilmForm(props) {
         fetchRealisateurs();
     }, []);
 
+    // Mettre à jour les champs quand le film à éditer change
+    useEffect(() => {
+        if (props.film) {
+            setTitre(props.film.titre || '');
+            setDuree(props.film.duree || '');
+            setRealisateurId(props.film.realisateur?.id || '');
+        }
+    }, [props.film]);
+
     // Gestion du changement dans le Select
     const handleRealisateurChange = (e) => {
         const value = e.target.value;
@@ -45,9 +54,19 @@ export default function CreateFilmForm(props) {
             duree: parseInt(duree),
             realisateurId: realisateurId
         };
+        
+        // Ajouter l'ID si on est en mode édition
+        if (props.film && props.film.id) {
+            filmData.id = props.film.id;
+        }
+        
         props.onSubmit(filmData);
-        if (!props.initialValues) {
-            setTitre(''); setDuree(''); setRealisateurId('');
+        
+        // Reset des champs seulement si on n'est pas en mode édition
+        if (!props.film && !props.initialValues) {
+            setTitre(''); 
+            setDuree(''); 
+            setRealisateurId('');
         }
     };
 
@@ -111,7 +130,7 @@ export default function CreateFilmForm(props) {
             </FormControl>
 
             <Button variant="contained" onClick={handleSubmit}>
-                {props.initialValues ? "Modifier" : "Créer le film"}
+                {(props.film || props.initialValues) ? "Modifier" : "Créer le film"}
             </Button>
 
             {/* --- MODALE D'AJOUT DE RÉALISATEUR --- */}
