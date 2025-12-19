@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 
 import javax.persistence.*; //ORM
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "Realisateur")
@@ -37,6 +38,7 @@ public class Realisateur {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
+    @JsonBackReference
     private List<Film> filmsRealises;
 
     public long getId() {
