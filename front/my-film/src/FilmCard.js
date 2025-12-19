@@ -70,38 +70,82 @@ export default function FilmCard(props) {
     };
 
     return (
-        <Card variant="outlined" sx={{ marginBottom: 2, display: 'flex', flexDirection: 'column' }}>
-            {/* Affichage conditionnel de l'image seulement si on a trouvé une URL */}
-            {posterUrl && (
+        <Card 
+            variant="outlined" 
+            sx={{ 
+                width: '200px',
+                height: '350px',
+                display: 'flex',
+                flexDirection: 'column',
+                cursor: 'pointer',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: 3
+                },
+                position: 'relative'
+            }}
+        >
+            {/* Affichage de l'affiche */}
+            {posterUrl ? (
                 <CardMedia
                     component="img"
-                    height="300" // Hauteur fixe pour l'image, ajustable selon vos besoins
+                    sx={{ 
+                        height: '300px',
+                        width: '100%',
+                        objectFit: 'cover'
+                    }}
                     image={posterUrl}
                     alt={`Affiche du film ${film.titre}`}
-                    sx={{ objectFit: 'contain', backgroundColor: '#f0f0f0' }} // contain pour voir l'affiche entière
                 />
+            ) : (
+                <div style={{ 
+                    height: '300px', 
+                    backgroundColor: '#e0e0e0', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: '#999'
+                }}>
+                    Pas d'affiche
+                </div>
             )}
 
-            <CardContent>
-                <Typography variant="h5" gutterBottom>
+            {/* Titre en dessous */}
+            <CardContent sx={{ padding: '8px', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Typography variant="body2" sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }}>
                     {film.titre}
                 </Typography>
-                <Typography variant="body1">
-                    Durée : {film.duree} minutes
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Réalisateur: {film.realisateur ? `${film.realisateur.prenom} ${film.realisateur.nom}` : 'Inconnu'}
-                </Typography>
-
-                <div style={{ marginTop: '10px' }}>
-                    <IconButton onClick={handleClickOnDeleteButton} color="error">
-                        <DeleteIcon />
-                    </IconButton>
-                    <IconButton onClick={handleClickOnEditButton} color="primary">
-                        <EditIcon />
-                    </IconButton>
-                </div>
             </CardContent>
+
+            {/* Boutons d'action en overlay au survol */}
+            <div style={{
+                position: 'absolute',
+                top: '5px',
+                right: '5px',
+                display: 'flex',
+                gap: '5px',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                borderRadius: '4px',
+                padding: '2px'
+            }}>
+                <IconButton 
+                    onClick={handleClickOnEditButton} 
+                    color="primary" 
+                    size="small"
+                    sx={{ padding: '4px' }}
+                >
+                    <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton 
+                    onClick={handleClickOnDeleteButton} 
+                    color="error" 
+                    size="small"
+                    sx={{ padding: '4px' }}
+                >
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
+            </div>
         </Card>
     );
 }
