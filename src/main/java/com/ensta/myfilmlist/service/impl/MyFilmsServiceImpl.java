@@ -246,25 +246,128 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
+    public FilmDTO updateFilm(long id, FilmForm form) throws ServiceException {
+        try {
+            // Vérifier que le film existe
+            Film existingFilm = filmDAO.findById(id);
+            if (existingFilm == null) {
+                return null;
+            }
+            
+            // Mettre à jour le titre
+            existingFilm.setTitre(form.getTitre());
+            
+            // Si c'est un film personnalisé avec toutes les données
+            if (form.getIsCustom() != null && form.getIsCustom()) {
+                // Gérer le réalisateur
+                if (form.getRealisateurNom() != null && form.getRealisateurPrenom() != null) {
+                    Realisateur realisateur = realisateurDAO.findByNomAndPrenom(
+                        form.getRealisateurNom(), 
+                        form.getRealisateurPrenom()
+                    );
+                    
+                    if (realisateur == null) {
+                        Realisateur newReal = new Realisateur();
+                        newReal.setNom(form.getRealisateurNom());
+                        newReal.setPrenom(form.getRealisateurPrenom());
+                        newReal.setCelebre(false);
+                        realisateur = realisateurDAO.save(newReal);
+                    }
+                    
+                    existingFilm.setRealisateur(realisateur);
+                }
+                
+                existingFilm.setDuree(form.getDuree());
+                existingFilm.setDateSortie(form.getDateSortie());
+                existingFilm.setPosterUrl(form.getPosterUrl());
+            } else {
+                // Sinon, essayer de récupérer les données depuis TMDB
+                try {
+                    TmdbService.TmdbFilmData tmdbData = tmdbService.searchFilmByTitle(form.getTitre());
+                    
+                    // Créer ou récupérer le réalisateur
+                    Realisateur realisateur = null;
+                    if (tmdbData.getDirectors() != null && !tmdbData.getDirectors().isEmpty()) {
+                        TmdbService.TmdbDirector tmdbDirector = tmdbData.getDirectors().get(0);
+                        
+                        Realisateur existingReal = realisateurDAO.findByNomAndPrenom(tmdbDirector.getNom(), tmdbDirector.getPrenom());
+                        
+                        if (existingReal != null) {
+                            realisateur = existingReal;
+                        } else {
+                            Realisateur newReal = new Realisateur();
+                            newReal.setNom(tmdbDirector.getNom());
+                            newReal.setPrenom(tmdbDirector.getPrenom());
+                            newReal.setDateNaissance(tmdbDirector.getDateNaissance());
+                            newReal.setCelebre(false);
+                            realisateur = realisateurDAO.save(newReal);
+                        }
+                    }
+                    
+                    // Mettre à jour avec les données TMDB
+                    existingFilm.setDuree(tmdbData.getDuree());
+                    existingFilm.setDateSortie(tmdbData.getDateSortie());
+                    existingFilm.setPosterUrl(tmdbData.getPosterUrl());
+                    
+                    if (realisateur != null) {
+                        existingFilm.setRealisateur(realisateur);
+                    }
+                    
+                } catch (Exception tmdbException) {
+                    // Si TMDB échoue, on garde les valeurs existantes
+                    System.out.println("Impossible de récupérer les données TMDB pour: " + form.getTitre());
+                }
+            }
+            
+            // Sauvegarder les modifications
+            Film updatedFilm = filmDAO.update(existingFilm);
+            
+            // Mettre à jour le statut célèbre du réalisateur
+            if (updatedFilm.getRealisateur() != null) {
+                Realisateur realisateur = updatedFilm.getRealisateur();
+                List<Film> filmsDuRealisateur = filmDAO.findByRealisateurId(realisateur.getId());
+                realisateur.setFilmsRealises(filmsDuRealisateur);
+                updateRealisateurCelebre(realisateur);
+                realisateurDAO.update(realisateur);
+            }
+            
+            return FilmMapper.convertFilmToFilmDTO(updatedFilm);
+            
+        } catch (Exception e) {
+            throw new ServiceException("Erreur lors de la mise à jour du film: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    @Transactional
     public void deleteFilm(long id) throws ServiceException {
         try {
+            // Récupérer le film avec son réalisateur
             Film film = filmDAO.findById(id);
             if (film == null) {
                 return;
             }
 
-            long realisateurId = film.getRealisateurId();
+            // Sauvegarder l'ID du réalisateur avant suppression
+            Long realisateurId = null;
+            if (film.getRealisateur() != null) {
+                realisateurId = film.getRealisateur().getId();
+            }
 
+            // Supprimer le film
             filmDAO.delete(id);
-            Optional<Realisateur> opt = realisateurDAO.findById(realisateurId);
-            if (opt.isEmpty()) return;
-
-            Realisateur r = opt.get();
-
-            List<Film> filmsRestants = filmDAO.findByRealisateurId(realisateurId);
-            r.setFilmsRealises(filmsRestants);
-            updateRealisateurCelebre(r);
-            realisateurDAO.update(r);
+            
+            // Mettre à jour le statut du réalisateur si nécessaire
+            if (realisateurId != null) {
+                Optional<Realisateur> opt = realisateurDAO.findById(realisateurId);
+                if (opt.isPresent()) {
+                    Realisateur r = opt.get();
+                    List<Film> filmsRestants = filmDAO.findByRealisateurId(realisateurId);
+                    r.setFilmsRealises(filmsRestants);
+                    updateRealisateurCelebre(r);
+                    realisateurDAO.update(r);
+                }
+            }
 
         } catch (Exception e) {
             throw new ServiceException("Erreur lors de la suppression du film avec id=" + id, e);

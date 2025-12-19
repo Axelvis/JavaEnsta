@@ -22,7 +22,7 @@ public class JpaFilmDAO implements FilmDAO {
     @Override
     public List<Film> findAll() {
         return entityManager
-                .createQuery("SELECT f FROM Film f", Film.class)
+                .createQuery("SELECT f FROM Film f LEFT JOIN FETCH f.realisateur", Film.class)
                 .getResultList();
     }
 
@@ -40,6 +40,11 @@ public class JpaFilmDAO implements FilmDAO {
     public Film create(Film film) {
         entityManager.persist(film);
         return film;
+    }
+
+    @Override
+    public Film update(Film film) {
+        return entityManager.merge(film);
     }
 
     @Override

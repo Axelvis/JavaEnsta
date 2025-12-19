@@ -67,6 +67,19 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    @Override
+    public ResponseEntity<FilmDTO> updateFilm(long id, @Valid FilmForm filmForm) throws ControllerException {
+        try {
+            FilmDTO updatedFilm = myFilmsService.updateFilm(id, filmForm);
+            if (updatedFilm == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.ok(updatedFilm);
+        } catch (ServiceException e) {
+            throw new ControllerException("Erreur lors de la mise à jour du film avec l'id: " + id, e);
+        }
+    }
+
 @Override
     public ResponseEntity<?> deleteFilm(long id) throws ControllerException {
         try {

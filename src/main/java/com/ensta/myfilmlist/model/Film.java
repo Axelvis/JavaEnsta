@@ -29,12 +29,9 @@ public class Film {
 	private LocalDateTime dateAjout;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "realisateur_id")
+	@JoinColumn(name = "realisateur_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@JsonManagedReference
 	private Realisateur realisateur;
-	
-	@Column(name = "realisateur_id", insertable = false, updatable = false)
-	private long realisateurId;
 
 	public long getId() {
 		return id;
@@ -66,14 +63,6 @@ public class Film {
 
 	public void setRealisateur(Realisateur realisateur) {
 		this.realisateur = realisateur;
-	}
-
-	public long getRealisateurId() {
-    return realisateurId;
-	}
-
-	public void setRealisateurId(long realisateurId) {
-		this.realisateurId = realisateurId;
 	}
 
 	public LocalDate getDateSortie() {
