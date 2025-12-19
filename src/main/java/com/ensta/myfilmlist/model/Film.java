@@ -1,14 +1,28 @@
 package com.ensta.myfilmlist.model;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * Represente un Film.
  */
+@Entity
+@Table(name = "Film")
 public class Film {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
 	private String titre;
 	private int duree;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "realisateur_id")
+	@JsonManagedReference
 	private Realisateur realisateur;
+	
+	@Column(name = "realisateur_id", insertable = false, updatable = false)
 	private long realisateurId;
 
 	public long getId() {
