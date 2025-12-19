@@ -1,8 +1,5 @@
 package com.ensta.myfilmlist.dto;
 
-/**
- * Contient les donnees d'un Film.
- */
 public class FilmDTO {
 
 	private long id;

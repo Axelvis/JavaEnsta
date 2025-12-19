@@ -9,19 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 
-import javax.persistence.*; //ORM
+import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "Realisateur")
 public class Realisateur {
-
-    /*private long id;
-    private String nom;
-    private String prenom;
-    private LocalDate dateNaissance;
-    private List<Film> filmRealises;
-    private boolean celebre;*/
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

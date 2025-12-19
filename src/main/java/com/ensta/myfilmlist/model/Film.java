@@ -3,9 +3,6 @@ package com.ensta.myfilmlist.model;
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-/**
- * Represente un Film.
- */
 @Entity
 @Table(name = "Film")
 public class Film {
