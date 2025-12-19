@@ -27,9 +27,7 @@ public class Realisateur {
     private boolean celebre;
 
     @OneToMany(
-        mappedBy = "realisateur",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
+        mappedBy = "realisateur"
     )
     @JsonBackReference
     private List<Film> filmsRealises;

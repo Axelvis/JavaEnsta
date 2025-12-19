@@ -10,6 +10,7 @@ import com.ensta.myfilmlist.form.FilmForm;
 import org.springframework.web.bind.annotation.PostMapping; 
 import org.springframework.web.bind.annotation.RequestBody; 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,6 +69,26 @@ public interface FilmController {
         @ApiResponse(code = 400, message = "Données d'entrée invalides (ex: réalisateur inexistant)")
     })
     ResponseEntity<FilmDTO> createFilm(@RequestBody FilmForm filmForm) throws ControllerException;
+
+    /**
+     * Met à jour un film existant dans la base de données.
+     * Le code HTTP de retour est 200 (OK).
+     * @param id L'identifiant du film à mettre à jour.
+     * @param filmForm Le formulaire contenant les données du film.
+     * @return ResponseEntity contenant le FilmDTO mis à jour.
+     * @throws ControllerException En cas d'erreur de traitement.
+     */
+    @PutMapping("/{id}")
+    @ApiOperation(
+        value = "Mettre à jour un film",
+        notes = "Met à jour un film existant et renvoie le film mis à jour.",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Le film a été mis à jour avec succès"),
+        @ApiResponse(code = 404, message = "Le film à mettre à jour n'existe pas")
+    })
+    ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) throws ControllerException;
 
 /**
      * Supprime un film de la base de données via son identifiant.

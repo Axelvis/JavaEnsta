@@ -7,23 +7,23 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Dialog, DialogContent } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Box, Divider } from '@mui/material';
 
 // Note: Dans un vrai projet, mettez cette clé dans un fichier .env
 const TMDB_API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTY5YWU2ZTY0OGYwNGFiMjNlMzFmNTM0ZjliNWY0NyIsIm5iZiI6MTc2NTUzODAxNC43MzgsInN1YiI6IjY5M2JmOGRlNmRlZTkzMGZhOGNiMDA2YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iRG_qZ3aUYTg9DVRr1mdqO0OVC8qbSaTeyPwwxFPsuk";
 
 export default function FilmCard(props) {
     const { film, onDelete, onEdit } = props;
-    const [posterUrl, setPosterUrl] = useState(null);
     const [trailerKey, setTrailerKey] = useState(null);
     const [movieId, setMovieId] = useState(null);
     const [openTrailer, setOpenTrailer] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
 
-    // Effet pour récupérer l'image et l'ID du film via l'API
+    // Effet pour récupérer l'ID du film et la bande-annonce
     useEffect(() => {
-        const fetchPoster = async () => {
-            // Sécurité 1 : Si pas de titre, on ne fait rien
-            if (!film.titre) return;
+        const fetchTrailer = async () => {
+            // Ne chercher la bande-annonce que si le film a une affiche (donc ajouté via TMDB)
+            if (!film.posterUrl || !film.titre) return;
 
             try {
                 const query = encodeURIComponent(film.titre);
@@ -37,65 +37,35 @@ export default function FilmCard(props) {
                     }
                 });
 
-                // Sécurité 2 : Gestion des erreurs HTTP (404, 500, 401...)
-                // Si l'URL est mal formée ou le token invalide, response.ok sera false
-                if (!response.ok) {
-                    console.warn(`Erreur HTTP: ${response.status}`);
-                    setPosterUrl(null); // On s'assure qu'aucune image n'est affichée
-                    return; // On arrête l'exécution ici
-                }
-
-                const data = await response.json();
-
-                // Sécurité 3 : Vérification de la structure de la donnée
-                // On vérifie que 'results' existe, qu'il n'est pas vide, et que le premier élément a bien un chemin d'image
-                if (data.results && data.results.length > 0) {
-                    const movie = data.results[0];
-                    if (movie.poster_path) {
-                        setPosterUrl(`https://image.tmdb.org/t/p/w300${movie.poster_path}`);
-                    }
-                    setMovieId(movie.id); // Stocker l'ID du film pour récupérer la bande-annonce
-                } else {
-                    // Si le film est introuvable ou n'a pas d'image
-                    setPosterUrl(null);
-                }
-
-            } catch (error) {
-                // Sécurité 4 : Gestion des erreurs Réseau (Pas d'internet, DNS échec, etc.)
-                console.error("Erreur lors du fetch ou parsing JSON:", error);
-                setPosterUrl(null); // En cas de crash réseau, on n'affiche pas d'image
-            }
-        };
-
-        fetchPoster();
-    }, [film.titre]); // On relance si le titre change
-
-    // Effet pour récupérer la bande-annonce
-    useEffect(() => {
-        const fetchTrailer = async () => {
-            if (!movieId || trailerKey) return;
-
-            try {
-                const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?language=fr-FR`;
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${TMDB_API_TOKEN}`,
-                        'accept': 'application/json'
-                    }
-                });
-
                 if (!response.ok) return;
 
                 const data = await response.json();
-                
-                // Chercher une bande-annonce YouTube
-                const trailer = data.results?.find(
-                    video => video.type === 'Trailer' && video.site === 'YouTube'
-                );
-                
-                if (trailer) {
-                    setTrailerKey(trailer.key);
+
+                if (data.results && data.results.length > 0) {
+                    const movie = data.results[0];
+                    setMovieId(movie.id);
+
+                    // Récupérer la bande-annonce
+                    const videoUrl = `https://api.themoviedb.org/3/movie/${movie.id}/videos?language=fr-FR`;
+                    const videoResponse = await fetch(videoUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+                            'accept': 'application/json'
+                        }
+                    });
+
+                    if (!videoResponse.ok) return;
+
+                    const videoData = await videoResponse.json();
+                    
+                    const trailer = videoData.results?.find(
+                        video => video.type === 'Trailer' && video.site === 'YouTube'
+                    );
+                    
+                    if (trailer) {
+                        setTrailerKey(trailer.key);
+                    }
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération de la bande-annonce:", error);
@@ -103,7 +73,7 @@ export default function FilmCard(props) {
         };
 
         fetchTrailer();
-    }, [movieId, trailerKey]);
+    }, [film.titre, film.posterUrl]);
 
     const handleClickOnDeleteButton = () => {
         onDelete(film.id);
@@ -116,6 +86,7 @@ export default function FilmCard(props) {
     return (
         <>
         <Card 
+            onClick={() => setOpenDetails(true)}
             variant="outlined" 
             sx={{ 
                 width: '200px',
@@ -132,7 +103,7 @@ export default function FilmCard(props) {
             }}
         >
             {/* Affichage de l'affiche */}
-            {posterUrl ? (
+            {film.posterUrl ? (
                 <CardMedia
                     component="img"
                     sx={{ 
@@ -140,17 +111,17 @@ export default function FilmCard(props) {
                         width: '100%',
                         objectFit: 'cover'
                     }}
-                    image={posterUrl}
+                    image={film.posterUrl}
                     alt={`Affiche du film ${film.titre}`}
                 />
             ) : (
                 <div style={{ 
                     height: '300px', 
-                    backgroundColor: '#e0e0e0', 
+                    backgroundColor: '#2c2c2c', 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    color: '#999'
+                    color: '#888'
                 }}>
                     Pas d'affiche
                 </div>
@@ -170,7 +141,7 @@ export default function FilmCard(props) {
                 right: '5px',
                 display: 'flex',
                 gap: '5px',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: 'rgba(30, 30, 30, 0.85)',
                 borderRadius: '4px',
                 padding: '2px'
             }}>
@@ -254,6 +225,184 @@ export default function FilmCard(props) {
                         />
                     </div>
                 )}
+            </DialogContent>
+        </Dialog>
+
+        {/* Modal pour les détails du film */}
+        <Dialog 
+            open={openDetails} 
+            onClose={() => setOpenDetails(false)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+                sx: {
+                    backgroundColor: '#1e1e1e',
+                    color: '#fff',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+                }
+            }}
+        >
+            <DialogTitle sx={{ 
+                backgroundColor: '#2c2c2c', 
+                color: '#fff',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                borderBottom: '2px solid #444'
+            }}>
+                {film.titre}
+            </DialogTitle>
+            <DialogContent sx={{ padding: '24px', backgroundColor: '#1e1e1e' }}>
+                <Box sx={{ display: 'flex', gap: 3 }}>
+                    {/* Affiche à gauche */}
+                    <Box sx={{ flex: '0 0 300px', mt: 2 }}>
+                        {film.posterUrl ? (
+                            <img 
+                                src={film.posterUrl} 
+                                alt={`Affiche du film ${film.titre}`}
+                                style={{ 
+                                    width: '100%', 
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.5)'
+                                }}
+                            />
+                        ) : (
+                            <Box sx={{ 
+                                width: '100%', 
+                                height: '450px', 
+                                backgroundColor: '#2c2c2c', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                borderRadius: '8px',
+                                color: '#888'
+                            }}>
+                                Pas d'affiche
+                            </Box>
+                        )}
+                    </Box>
+
+                    {/* Détails à droite */}
+                    <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" sx={{ mb: 2, mt: 2, color: '#4caf50', fontWeight: 'bold' }}>
+                            Informations
+                        </Typography>
+                        <Divider sx={{ mb: 2, backgroundColor: '#444' }} />
+                        
+                        {film.dateSortie && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Date de sortie
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {new Date(film.dateSortie).toLocaleDateString('fr-FR', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.duree && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Durée
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {film.duree} minutes
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.realisateur && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Réalisateur
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {film.realisateur.prenom} {film.realisateur.nom}
+                                    {film.realisateur.celebre && (
+                                        <span style={{ color: '#ffd700', marginLeft: '8px' }}>★ Célèbre</span>
+                                    )}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.dateAjout && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Ajouté le
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {new Date(film.dateAjout).toLocaleDateString('fr-FR', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {/* Boutons d'action */}
+                        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+                            {trailerKey && (
+                                <IconButton 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setOpenDetails(false);
+                                        setOpenTrailer(true);
+                                    }}
+                                    sx={{ 
+                                        backgroundColor: '#4caf50',
+                                        color: '#fff',
+                                        '&:hover': {
+                                            backgroundColor: '#45a049'
+                                        },
+                                        padding: '12px'
+                                    }}
+                                >
+                                    <PlayArrowIcon />
+                                </IconButton>
+                            )}
+                            <IconButton 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenDetails(false);
+                                    handleClickOnEditButton();
+                                }} 
+                                sx={{ 
+                                    backgroundColor: '#2196f3',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#1976d2'
+                                    },
+                                    padding: '12px'
+                                }}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenDetails(false);
+                                    handleClickOnDeleteButton();
+                                }} 
+                                sx={{ 
+                                    backgroundColor: '#f44336',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#d32f2f'
+                                    },
+                                    padding: '12px'
+                                }}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                </Box>
             </DialogContent>
         </Dialog>
         </>

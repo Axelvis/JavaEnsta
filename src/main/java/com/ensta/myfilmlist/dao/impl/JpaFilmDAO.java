@@ -22,7 +22,7 @@ public class JpaFilmDAO implements FilmDAO {
     @Override
     public List<Film> findAll() {
         return entityManager
-                .createQuery("SELECT f FROM Film f", Film.class)
+                .createQuery("SELECT f FROM Film f LEFT JOIN FETCH f.realisateur", Film.class)
                 .getResultList();
     }
 
@@ -40,6 +40,11 @@ public class JpaFilmDAO implements FilmDAO {
     public Film create(Film film) {
         entityManager.persist(film);
         return film;
+    }
+
+    @Override
+    public Film update(Film film) {
+        return entityManager.merge(film);
     }
 
     @Override
@@ -74,5 +79,17 @@ public class JpaFilmDAO implements FilmDAO {
                 )
                 .setParameter("id", realisateurId)
                 .getResultList();
+    }
+
+    @Override
+    public Film findByTitre(String titre) {
+        List<Film> results = entityManager
+                .createQuery(
+                    "SELECT f FROM Film f WHERE LOWER(f.titre) = LOWER(:titre)",
+                    Film.class
+                )
+                .setParameter("titre", titre)
+                .getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
 }

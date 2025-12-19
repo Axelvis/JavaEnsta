@@ -17,6 +17,5 @@ export function deleteFilm(id) {
 
 // Fonction pour modifier (sera utilisée pour l'édition)
 export function putFilm(film) {
-    return axios.delete(`${FILM_URI}/${film.id}`)
-        .then(() => axios.post(FILM_URI, film));
+    return axios.put(`${FILM_URI}/${film.id}`, film);
 }

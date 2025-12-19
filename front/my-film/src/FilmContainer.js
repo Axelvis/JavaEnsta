@@ -35,7 +35,14 @@ export default function FilmContainer() {
                 fetchFilms(); // Rafraichir la liste après création
                 setOpenCreate(false); // Fermer le dialog
             })
-            .catch(err => console.error("Erreur création", err));
+            .catch(err => {
+                console.error("Erreur création", err);
+                if (err.response && err.response.data && err.response.data.message) {
+                    alert(err.response.data.message);
+                } else {
+                    alert("Erreur lors de la création du film");
+                }
+            });
     };
 
     // Gestion de la suppression [cite: 158]
@@ -97,6 +104,16 @@ export default function FilmContainer() {
                 return (a.duree || 0) - (b.duree || 0);
             case 'duree-desc':
                 return (b.duree || 0) - (a.duree || 0);
+            case 'dateAjout-asc':
+                // Plus ancien d'abord (tri croissant)
+                if (!a.dateAjout) return 1; // Les films sans date à la fin
+                if (!b.dateAjout) return -1;
+                return new Date(a.dateAjout) - new Date(b.dateAjout);
+            case 'dateAjout-desc':
+                // Plus récent d'abord (tri décroissant)
+                if (!a.dateAjout) return 1; // Les films sans date à la fin
+                if (!b.dateAjout) return -1;
+                return new Date(b.dateAjout) - new Date(a.dateAjout);
             default:
                 return 0;
         }

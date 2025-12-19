@@ -1,5 +1,11 @@
 package com.ensta.myfilmlist.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Contient les donnees d'un Film.
+ */
 public class FilmDTO {
 
 	private long id;
@@ -7,6 +13,13 @@ public class FilmDTO {
 	private String titre;
 
 	private int duree;
+	
+	private LocalDate dateSortie;
+	
+	private String posterUrl;
+	
+	private LocalDateTime dateAjout;
+	
 	private RealisateurDTO realisateur;
 
 	public long getId() {
@@ -40,10 +53,34 @@ public class FilmDTO {
     public void setRealisateur(RealisateurDTO realisateur) {
         this.realisateur = realisateur;
     }
+    
+    public LocalDate getDateSortie() {
+		return dateSortie;
+	}
+
+	public void setDateSortie(LocalDate dateSortie) {
+		this.dateSortie = dateSortie;
+	}
+
+	public String getPosterUrl() {
+		return posterUrl;
+	}
+
+	public void setPosterUrl(String posterUrl) {
+		this.posterUrl = posterUrl;
+	}
+	
+	public LocalDateTime getDateAjout() {
+		return dateAjout;
+	}
+
+	public void setDateAjout(LocalDateTime dateAjout) {
+		this.dateAjout = dateAjout;
+	}
 	
 	@Override
 public String toString() {
-    return "FilmDTO [id=" + id + ", titre=" + titre + ", duree=" + duree + ", realisateur=" + realisateur + "]";
+    return "FilmDTO [id=" + id + ", titre=" + titre + ", duree=" + duree + ", dateSortie=" + dateSortie + ", posterUrl=" + posterUrl + ", realisateur=" + realisateur + "]";
 }
 
 }
