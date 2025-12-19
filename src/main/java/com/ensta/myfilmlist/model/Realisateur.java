@@ -4,14 +4,40 @@ package com.ensta.myfilmlist.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+
+import javax.persistence.*; //ORM
+
+@Entity
+@Table(name = "Realisateur")
 public class Realisateur {
 
-    private long id;
+    /*private long id;
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
     private List<Film> filmRealises;
+    private boolean celebre;*/
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String nom;
+    private String prenom;
+
+    @Column(name = "date_naissance")
+    private LocalDate dateNaissance;
     private boolean celebre;
+
+    @OneToMany(
+        mappedBy = "realisateur",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<Film> filmsRealises;
 
     public long getId() {
         return id;
@@ -46,11 +72,11 @@ public class Realisateur {
     }
 
     public List<Film> getFilmsRealises() {
-        return filmRealises;
+        return filmsRealises;
     }
 
     public void setFilmsRealises(List<Film> filmRealises) {
-        this.filmRealises = filmRealises;
+        this.filmsRealises = filmRealises;
     }
 
     public boolean isCelebre() {
