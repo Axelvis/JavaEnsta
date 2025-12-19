@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Dialog, DialogContent } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Box, Divider } from '@mui/material';
 
 // Note: Dans un vrai projet, mettez cette clé dans un fichier .env
 const TMDB_API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTY5YWU2ZTY0OGYwNGFiMjNlMzFmNTM0ZjliNWY0NyIsIm5iZiI6MTc2NTUzODAxNC43MzgsInN1YiI6IjY5M2JmOGRlNmRlZTkzMGZhOGNiMDA2YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iRG_qZ3aUYTg9DVRr1mdqO0OVC8qbSaTeyPwwxFPsuk";
@@ -17,6 +17,7 @@ export default function FilmCard(props) {
     const [trailerKey, setTrailerKey] = useState(null);
     const [movieId, setMovieId] = useState(null);
     const [openTrailer, setOpenTrailer] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
 
     // Effet pour récupérer l'ID du film et la bande-annonce
     useEffect(() => {
@@ -85,6 +86,7 @@ export default function FilmCard(props) {
     return (
         <>
         <Card 
+            onClick={() => setOpenDetails(true)}
             variant="outlined" 
             sx={{ 
                 width: '200px',
@@ -223,6 +225,184 @@ export default function FilmCard(props) {
                         />
                     </div>
                 )}
+            </DialogContent>
+        </Dialog>
+
+        {/* Modal pour les détails du film */}
+        <Dialog 
+            open={openDetails} 
+            onClose={() => setOpenDetails(false)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+                sx: {
+                    backgroundColor: '#1e1e1e',
+                    color: '#fff',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+                }
+            }}
+        >
+            <DialogTitle sx={{ 
+                backgroundColor: '#2c2c2c', 
+                color: '#fff',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                borderBottom: '2px solid #444'
+            }}>
+                {film.titre}
+            </DialogTitle>
+            <DialogContent sx={{ padding: '24px', backgroundColor: '#1e1e1e' }}>
+                <Box sx={{ display: 'flex', gap: 3 }}>
+                    {/* Affiche à gauche */}
+                    <Box sx={{ flex: '0 0 300px', mt: 2 }}>
+                        {film.posterUrl ? (
+                            <img 
+                                src={film.posterUrl} 
+                                alt={`Affiche du film ${film.titre}`}
+                                style={{ 
+                                    width: '100%', 
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.5)'
+                                }}
+                            />
+                        ) : (
+                            <Box sx={{ 
+                                width: '100%', 
+                                height: '450px', 
+                                backgroundColor: '#2c2c2c', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                borderRadius: '8px',
+                                color: '#888'
+                            }}>
+                                Pas d'affiche
+                            </Box>
+                        )}
+                    </Box>
+
+                    {/* Détails à droite */}
+                    <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" sx={{ mb: 2, mt: 2, color: '#4caf50', fontWeight: 'bold' }}>
+                            Informations
+                        </Typography>
+                        <Divider sx={{ mb: 2, backgroundColor: '#444' }} />
+                        
+                        {film.dateSortie && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Date de sortie
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {new Date(film.dateSortie).toLocaleDateString('fr-FR', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.duree && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Durée
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {film.duree} minutes
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.realisateur && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Réalisateur
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {film.realisateur.prenom} {film.realisateur.nom}
+                                    {film.realisateur.celebre && (
+                                        <span style={{ color: '#ffd700', marginLeft: '8px' }}>★ Célèbre</span>
+                                    )}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {film.dateAjout && (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ color: '#888', fontSize: '0.85rem' }}>
+                                    Ajouté le
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '1rem' }}>
+                                    {new Date(film.dateAjout).toLocaleDateString('fr-FR', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {/* Boutons d'action */}
+                        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+                            {trailerKey && (
+                                <IconButton 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setOpenDetails(false);
+                                        setOpenTrailer(true);
+                                    }}
+                                    sx={{ 
+                                        backgroundColor: '#4caf50',
+                                        color: '#fff',
+                                        '&:hover': {
+                                            backgroundColor: '#45a049'
+                                        },
+                                        padding: '12px'
+                                    }}
+                                >
+                                    <PlayArrowIcon />
+                                </IconButton>
+                            )}
+                            <IconButton 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenDetails(false);
+                                    handleClickOnEditButton();
+                                }} 
+                                sx={{ 
+                                    backgroundColor: '#2196f3',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#1976d2'
+                                    },
+                                    padding: '12px'
+                                }}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenDetails(false);
+                                    handleClickOnDeleteButton();
+                                }} 
+                                sx={{ 
+                                    backgroundColor: '#f44336',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#d32f2f'
+                                    },
+                                    padding: '12px'
+                                }}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                </Box>
             </DialogContent>
         </Dialog>
         </>

@@ -21,12 +21,15 @@ INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (15, '
 INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (16, 'Tarantino', 'Quentin', NULL, FALSE);
 INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (17, 'Cogman', 'Bryan', NULL, FALSE);
 INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (18, 'Lawrence', 'Francis', NULL, FALSE);
+INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (19, 'Yates', 'David', NULL, FALSE);
+INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (20, 'Newell', 'Mike', NULL, FALSE);
+INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (21, 'Cuarón', 'Alfonso', NULL, FALSE);
+INSERT INTO Realisateur (id, nom, prenom, date_naissance, celebre) VALUES (22, 'Leitch', 'David', NULL, FALSE);
 
 -- Films
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (1, 'Avatar : De feu et de cendres', 198, 1, '2025-12-17', 'https://image.tmdb.org/t/p/w500/5BnOt0PRymp5mXuoKv1unQ9x8I8.jpg', '2025-12-19 12:23:11.274003');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (2, 'Incendies', 123, 2, '2010-09-17', 'https://image.tmdb.org/t/p/w500/i5GsLIII66LubmOai65cWiB4kZq.jpg', '2025-12-19 12:24:16.335145');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (3, 'Inter', 6, 3, '2024-05-30', 'https://image.tmdb.org/t/p/w500/b7op5PoYsylq5Ui8wv34yvLRn9M.jpg', '2025-12-19 12:24:23.664152');
-INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (4, 'Harry Potter à l''école des sorciers', 153, 4, '2001-11-16', 'https://image.tmdb.org/t/p/w500/fbxQ44VRdM2PVzHSNajUseUteem.jpg', '2025-12-19 12:24:30.947871');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (5, 'Interstellar', 169, 5, '2014-11-05', 'https://image.tmdb.org/t/p/w500/1pnigkWWy8W032o9TKDneBa3eVK.jpg', '2025-12-19 12:24:38.301028');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (6, 'Senadala At Persyanus: Ang Bagong Mukha Ng Moro-Moro', 80, NULL, NULL, 'https://image.tmdb.org/t/p/w500/oSG1DcxXbw891jYE2oAI4jLUEb1.jpg', '2025-12-19 12:24:44.999456');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (7, 'Percy Jackson : Le Voleur de foudre', 122, 4, '2010-02-01', 'https://image.tmdb.org/t/p/w500/7VytSOVN8JsMugBY3Y4KfmQF2QN.jpg', '2025-12-19 12:24:53.244554');
@@ -43,4 +46,12 @@ INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, dat
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (18, 'Pulp Fiction', 154, 16, '1994-09-10', 'https://image.tmdb.org/t/p/w500/4TBdF7nFw2aKNM0gPOlDNq3v3se.jpg', '2025-12-19 12:27:23.052812');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (19, 'Game of Thrones: The Last Watch', 114, 17, '2019-05-26', 'https://image.tmdb.org/t/p/w500/jJYOyPjkoF139V9nYO9WxECAlxV.jpg', '2025-12-19 12:27:44.551614');
 INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (20, 'Hunger Games : L''Embrasement', 146, 18, '2013-11-15', 'https://image.tmdb.org/t/p/w500/32mRJXEjmpcVYcQFvzvXCLPsUgS.jpg', '2025-12-19 12:28:02.854462');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (21, 'Harry Potter à l''école des sorciers', 153, 4, '2001-11-16', 'https://image.tmdb.org/t/p/w500/fbxQ44VRdM2PVzHSNajUseUteem.jpg', '2025-12-19 12:40:08.489225');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (22, 'Harry Potter et l''Ordre du Phénix', 138, 19, '2007-07-08', 'https://image.tmdb.org/t/p/w500/9ZfpCVNx0y8jpColnnfdA1HI4Zb.jpg', '2025-12-19 12:40:15.701893');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (23, 'Harry Potter et la Coupe de feu', 157, 20, '2005-11-16', 'https://image.tmdb.org/t/p/w500/hBak1pn5pbI4ycAbrgMMn1YI7P1.jpg', '2025-12-19 12:40:22.654303');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (24, 'Harry Potter et le Prisonnier d''Azkaban', 142, 21, '2004-05-31', 'https://image.tmdb.org/t/p/w500/t4P2079IyK19njHDP2GwQrKdvzd.jpg', '2025-12-19 12:40:29.560314');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (25, 'Harry Potter et la Chambre des secrets', 161, 4, '2002-11-13', 'https://image.tmdb.org/t/p/w500/8KpHRokGpiaqEGpjYe0rpywtvUx.jpg', '2025-12-19 12:40:35.890374');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (29, 'Fast & Furious : Hobbs & Shaw', 141, 22, '2023-05-17', 'https://image.tmdb.org/t/p/w500/v1467wvoQIXlVY5MtAqt3PUtOdH.jpg', '2025-12-19 12:41:24.48184');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (34, 'Avatar : La Voie de l''eau', 192, 1, '2022-12-14', 'https://image.tmdb.org/t/p/w500/kQYx143yujkwyjJdZH2skOGeQfA.jpg', '2025-12-19 12:42:30.686975');
+INSERT INTO Film (id, titre, duree, realisateur_id, date_sortie, poster_url, date_ajout) VALUES (35, 'Avatar', 166, 1, '2009-12-16', 'https://image.tmdb.org/t/p/w500/v5Y8pVwJK68SKQQ1GRbIB1hkPDy.jpg', '2025-12-19 12:42:38.427276');
 

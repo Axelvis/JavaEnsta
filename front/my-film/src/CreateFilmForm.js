@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TextField, Button, Autocomplete, CircularProgress, Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { getAllFilms } from './api/FilmApi';
 
 const TMDB_API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTY5YWU2ZTY0OGYwNGFiMjNlMzFmNTM0ZjliNWY0NyIsIm5iZiI6MTc2NTUzODAxNC43MzgsInN1YiI6IjY5M2JmOGRlNmRlZTkzMGZhOGNiMDA2YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iRG_qZ3aUYTg9DVRr1mdqO0OVC8qbSaTeyPwwxFPsuk";
 
@@ -10,6 +11,8 @@ export default function CreateFilmForm(props) {
     const [loading, setLoading] = useState(false);
     const [selectedFilm, setSelectedFilm] = useState(null);
     const [openCustomDialog, setOpenCustomDialog] = useState(false);
+    const [existingFilms, setExistingFilms] = useState([]);
+    const inputRef = useRef(null);
     
     // Champs pour le formulaire personnalisé
     const [customTitre, setCustomTitre] = useState('');
@@ -26,6 +29,25 @@ export default function CreateFilmForm(props) {
             setTitre(props.film.titre || '');
         }
     }, [props.film]);
+
+    // Charger la liste des films existants au montage
+    useEffect(() => {
+        getAllFilms()
+            .then(response => {
+                setExistingFilms(response.data);
+            })
+            .catch(err => console.error("Erreur chargement films existants", err));
+    }, []);
+
+    // Auto-focus sur le champ au montage du composant
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Recherche TMDB en temps réel
     useEffect(() => {
@@ -50,14 +72,27 @@ export default function CreateFilmForm(props) {
 
                 if (response.ok) {
                     const data = await response.json();
-                    const films = data.results.slice(0, 10).map(movie => ({
-                        id: movie.id,
-                        titre: movie.title,
-                        originalTitle: movie.original_title,
-                        releaseDate: movie.release_date,
-                        posterPath: movie.poster_path,
-                        fromTMDB: true
-                    }));
+                    
+                    // Filtrer les films qui existent déjà dans la base (sauf en mode édition)
+                    const films = data.results.slice(0, 10)
+                        .filter(movie => {
+                            // En mode édition, ne pas filtrer le film actuel
+                            if (props.film && movie.title.toLowerCase() === props.film.titre.toLowerCase()) {
+                                return true;
+                            }
+                            // Sinon, exclure tous les films déjà existants
+                            return !existingFilms.some(existingFilm => 
+                                existingFilm.titre.toLowerCase() === movie.title.toLowerCase()
+                            );
+                        })
+                        .map(movie => ({
+                            id: movie.id,
+                            titre: movie.title,
+                            originalTitle: movie.original_title,
+                            releaseDate: movie.release_date,
+                            posterPath: movie.poster_path,
+                            fromTMDB: true
+                        }));
                     
                     // Ajouter l'option "Personnaliser" en premier
                     const customOption = {
@@ -79,7 +114,7 @@ export default function CreateFilmForm(props) {
         }, 500);
 
         return () => clearTimeout(searchTimeout);
-    }, [titre]);
+    }, [titre, existingFilms, props.film]);
 
     const handleSubmit = () => {
         if (!titre.trim()) {
@@ -217,6 +252,7 @@ export default function CreateFilmForm(props) {
                         {...params}
                         label="Titre du film"
                         placeholder="Ex: Avatar, Inception, Interstellar..."
+                        inputRef={inputRef}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (

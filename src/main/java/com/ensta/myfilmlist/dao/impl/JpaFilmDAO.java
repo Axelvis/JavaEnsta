@@ -80,4 +80,16 @@ public class JpaFilmDAO implements FilmDAO {
                 .setParameter("id", realisateurId)
                 .getResultList();
     }
+
+    @Override
+    public Film findByTitre(String titre) {
+        List<Film> results = entityManager
+                .createQuery(
+                    "SELECT f FROM Film f WHERE LOWER(f.titre) = LOWER(:titre)",
+                    Film.class
+                )
+                .setParameter("titre", titre)
+                .getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
 }

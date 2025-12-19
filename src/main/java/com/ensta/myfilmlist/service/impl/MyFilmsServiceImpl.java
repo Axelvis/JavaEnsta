@@ -152,6 +152,12 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional // createFilm et deleteFilm sont transactionnelles pour garantir l'atomicité et la cohérence des opérations.
     public FilmDTO createFilm(FilmForm form) throws ServiceException {
         try {
+            // Vérifier si le film existe déjà
+            Film existingFilm = filmDAO.findByTitre(form.getTitre());
+            if (existingFilm != null) {
+                throw new ServiceException("Un film avec ce titre existe déjà dans la base de données.");
+            }
+            
             Film film = new Film();
             film.setTitre(form.getTitre());
             film.setDateAjout(java.time.LocalDateTime.now());

@@ -35,7 +35,14 @@ export default function FilmContainer() {
                 fetchFilms(); // Rafraichir la liste après création
                 setOpenCreate(false); // Fermer le dialog
             })
-            .catch(err => console.error("Erreur création", err));
+            .catch(err => {
+                console.error("Erreur création", err);
+                if (err.response && err.response.data && err.response.data.message) {
+                    alert(err.response.data.message);
+                } else {
+                    alert("Erreur lors de la création du film");
+                }
+            });
     };
 
     // Gestion de la suppression [cite: 158]

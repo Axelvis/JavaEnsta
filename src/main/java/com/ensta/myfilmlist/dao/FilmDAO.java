@@ -14,5 +14,6 @@ public interface FilmDAO {
     Optional<Film> findOptionalById(long id);
     void delete(Film film);
     List<Film> findByRealisateurId(long realisateurId);
+    Film findByTitre(String titre);
 
 }
