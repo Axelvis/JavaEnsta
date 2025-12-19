@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import FilmList from './FilmList';
 import CreateFilmForm from './CreateFilmForm';
+import FilmFilter from './FilmFilter';
 import { getAllFilms, postFilm, deleteFilm, putFilm } from './api/FilmApi';
 
 export default function FilmContainer() {
     const [films, setFilms] = useState([]);
     const [open, setOpen] = useState(false);
     const [editingFilm, setEditingFilm] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOption, setSortOption] = useState('titre-asc');
 
     // Fonction pour charger les films depuis le backend
     const fetchFilms = () => {
@@ -60,13 +63,57 @@ export default function FilmContainer() {
             .catch(err => console.error("Erreur mise à jour", err));
     };
 
+    // Filtrer les films selon le terme de recherche
+    const filteredFilms = films.filter(film => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            film.titre.toLowerCase().includes(searchLower) ||
+            (film.realisateur && film.realisateur.nom && 
+             film.realisateur.nom.toLowerCase().includes(searchLower)) ||
+            (film.realisateur && film.realisateur.prenom && 
+             film.realisateur.prenom.toLowerCase().includes(searchLower))
+        );
+    });
+
+    // Trier les films selon l'option choisie
+    const sortedFilms = [...filteredFilms].sort((a, b) => {
+        switch(sortOption) {
+            case 'titre-asc':
+                return a.titre.localeCompare(b.titre, 'fr', { sensitivity: 'base' });
+            case 'titre-desc':
+                return b.titre.localeCompare(a.titre, 'fr', { sensitivity: 'base' });
+            case 'realisateur-asc':
+                const nomA = a.realisateur ? `${a.realisateur.nom} ${a.realisateur.prenom}` : '';
+                const nomB = b.realisateur ? `${b.realisateur.nom} ${b.realisateur.prenom}` : '';
+                return nomA.localeCompare(nomB, 'fr', { sensitivity: 'base' });
+            case 'realisateur-desc':
+                const nomA2 = a.realisateur ? `${a.realisateur.nom} ${a.realisateur.prenom}` : '';
+                const nomB2 = b.realisateur ? `${b.realisateur.nom} ${b.realisateur.prenom}` : '';
+                return nomB2.localeCompare(nomA2, 'fr', { sensitivity: 'base' });
+            case 'duree-asc':
+                return (a.duree || 0) - (b.duree || 0);
+            case 'duree-desc':
+                return (b.duree || 0) - (a.duree || 0);
+            default:
+                return 0;
+        }
+    });
+
     return (
         <div>
             {/* On passe la fonction de création au formulaire */}
             <CreateFilmForm onSubmit={handleCreateFilm} />
             
-            {/* On passe la liste et la fonction de suppression à la liste */}
-            <FilmList films={films} onDelete={handleDeleteFilm} onEdit={handleOpenEdit} />
+            {/* Composant de filtrage et de tri */}
+            <FilmFilter 
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                sortOption={sortOption}
+                onSortChange={setSortOption}
+            />
+            
+            {/* On passe la liste filtrée et triée */}
+            <FilmList films={sortedFilms} onDelete={handleDeleteFilm} onEdit={handleOpenEdit} />
 
             <Dialog open={open} onClose={handleCloseEdit}>
                 <DialogTitle>Editer un film</DialogTitle>

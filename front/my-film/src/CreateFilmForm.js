@@ -103,7 +103,7 @@ export default function CreateFilmForm(props) {
     };
 
     return (
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '500px', margin: '0 auto' }}>
             <TextField label="Titre" value={titre} onChange={(e) => setTitre(e.target.value)} />
             <TextField label="Durée" type="number" value={duree} onChange={(e) => setDuree(e.target.value)} />
             
