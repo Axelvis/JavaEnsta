@@ -115,11 +115,11 @@ export default function FilmCard(props) {
             ) : (
                 <div style={{ 
                     height: '300px', 
-                    backgroundColor: '#e0e0e0', 
+                    backgroundColor: '#2c2c2c', 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    color: '#999'
+                    color: '#888'
                 }}>
                     Pas d'affiche
                 </div>
@@ -139,7 +139,7 @@ export default function FilmCard(props) {
                 right: '5px',
                 display: 'flex',
                 gap: '5px',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: 'rgba(30, 30, 30, 0.85)',
                 borderRadius: '4px',
                 padding: '2px'
             }}>

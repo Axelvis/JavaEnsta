@@ -7,7 +7,7 @@ export default function FilmFilter(props) {
     return (
         <Box sx={{ 
             padding: '20px', 
-            backgroundColor: '#f5f5f5', 
+            backgroundColor: 'background.paper', 
             borderRadius: '8px',
             margin: '20px',
             marginLeft: 'auto',
@@ -22,7 +22,7 @@ export default function FilmFilter(props) {
                 variant="outlined"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                sx={{ minWidth: '300px', flex: 1, backgroundColor: 'white' }}
+                sx={{ minWidth: '300px', flex: 1 }}
                 placeholder="Titre, réalisateur..."
             />
             
@@ -32,7 +32,7 @@ export default function FilmFilter(props) {
                     value={sortOption}
                     label="Trier par"
                     onChange={(e) => onSortChange(e.target.value)}
-                    sx={{ backgroundColor: 'white', textAlign: 'left' }}
+                    sx={{ textAlign: 'left' }}
                     MenuProps={{
                         anchorOrigin: {
                             vertical: 'bottom',
