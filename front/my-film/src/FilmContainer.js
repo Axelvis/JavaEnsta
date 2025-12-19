@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import FilmList from './FilmList';
 import CreateFilmForm from './CreateFilmForm';
 import FilmFilter from './FilmFilter';
@@ -8,6 +9,7 @@ import { getAllFilms, postFilm, deleteFilm, putFilm } from './api/FilmApi';
 export default function FilmContainer() {
     const [films, setFilms] = useState([]);
     const [open, setOpen] = useState(false);
+    const [openCreate, setOpenCreate] = useState(false);
     const [editingFilm, setEditingFilm] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('titre-asc');
@@ -31,6 +33,7 @@ export default function FilmContainer() {
         postFilm(newFilm)
             .then(() => {
                 fetchFilms(); // Rafraichir la liste après création
+                setOpenCreate(false); // Fermer le dialog
             })
             .catch(err => console.error("Erreur création", err));
     };
@@ -101,9 +104,6 @@ export default function FilmContainer() {
 
     return (
         <div>
-            {/* On passe la fonction de création au formulaire */}
-            <CreateFilmForm onSubmit={handleCreateFilm} />
-            
             {/* Composant de filtrage et de tri */}
             <FilmFilter 
                 searchTerm={searchTerm}
@@ -115,7 +115,32 @@ export default function FilmContainer() {
             {/* On passe la liste filtrée et triée */}
             <FilmList films={sortedFilms} onDelete={handleDeleteFilm} onEdit={handleOpenEdit} />
 
-            <Dialog open={open} onClose={handleCloseEdit}>
+            {/* Bouton flottant pour créer un film */}
+            <Fab 
+                color="primary" 
+                aria-label="add"
+                onClick={() => setOpenCreate(true)}
+                sx={{
+                    position: 'fixed',
+                    bottom: 30,
+                    right: 30,
+                    width: 70,
+                    height: 70
+                }}
+            >
+                <AddIcon sx={{ fontSize: 35 }} />
+            </Fab>
+
+            {/* Dialog pour créer un film */}
+            <Dialog open={openCreate} onClose={() => setOpenCreate(false)} maxWidth="sm" fullWidth>
+                <DialogTitle>Créer un nouveau film</DialogTitle>
+                <DialogContent>
+                    <CreateFilmForm onSubmit={handleCreateFilm} />
+                </DialogContent>
+            </Dialog>
+
+            {/* Dialog pour éditer un film */}
+            <Dialog open={open} onClose={handleCloseEdit} maxWidth="sm" fullWidth>
                 <DialogTitle>Editer un film</DialogTitle>
                 <DialogContent>
                     <CreateFilmForm film={editingFilm} onSubmit={handleUpdateFilm} />
