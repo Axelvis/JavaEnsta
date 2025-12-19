@@ -6,7 +6,7 @@ INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES('Nolan', 'C
 INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES('Tarantino', 'Quentin', '1963-03-27', true);
 INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES('Scorsese', 'Martin', '1942-11-17', true);
 
-CREATE TABLE IF NOT EXISTS Film(id INT primary key auto_increment, titre VARCHAR(100), duree INT, realisateur_id INT);
+CREATE TABLE IF NOT EXISTS Film(id INT primary key auto_increment, titre VARCHAR(100), duree INT, realisateur_id INT, date_sortie DATE, poster_url VARCHAR(500), date_ajout TIMESTAMP);
 INSERT INTO Film(titre, duree, realisateur_id) VALUES('avatar', 162, 1);
 INSERT INTO Film(titre, duree, realisateur_id) VALUES('La communauté de l''anneau', 178, 2);
 INSERT INTO Film(titre, duree, realisateur_id) VALUES('Les deux tours', 179, 2);

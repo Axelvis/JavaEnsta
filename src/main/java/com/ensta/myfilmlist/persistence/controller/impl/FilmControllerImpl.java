@@ -19,7 +19,7 @@ import com.ensta.myfilmlist.persistence.controller.FilmController;
 import com.ensta.myfilmlist.service.MyFilmsService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RequestMapping("/film")
 public class FilmControllerImpl implements FilmController {
 

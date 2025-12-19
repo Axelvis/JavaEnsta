@@ -50,6 +50,8 @@ export default function FilmFilter(props) {
                     <MenuItem value="realisateur-desc">Réalisateur (Z → A)</MenuItem>
                     <MenuItem value="duree-asc">Durée (Plus court)</MenuItem>
                     <MenuItem value="duree-desc">Durée (Plus long)</MenuItem>
+                    <MenuItem value="dateAjout-desc">Date d'ajout (Plus récent)</MenuItem>
+                    <MenuItem value="dateAjout-asc">Date d'ajout (Plus ancien)</MenuItem>
                 </Select>
             </FormControl>
         </Box>

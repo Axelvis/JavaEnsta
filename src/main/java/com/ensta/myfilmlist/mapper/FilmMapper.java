@@ -35,6 +35,9 @@ public class FilmMapper {
 		filmDTO.setId(film.getId());
 		filmDTO.setTitre(film.getTitre());
 		filmDTO.setDuree(film.getDuree());
+		filmDTO.setDateSortie(film.getDateSortie());
+		filmDTO.setPosterUrl(film.getPosterUrl());
+		filmDTO.setDateAjout(film.getDateAjout());
 
 		// 🎯 Conversion du réalisateur EN DTO
 		if (film.getRealisateur() != null) {
@@ -70,8 +73,6 @@ public class FilmMapper {
 	public static Film convertFilmFormToFilm(FilmForm filmForm) {
 		Film film = new Film();
 		film.setTitre(filmForm.getTitre());
-		film.setDuree(filmForm.getDuree());
-		film.setRealisateurId(filmForm.getRealisateurId());
 
 		return film;
 	}

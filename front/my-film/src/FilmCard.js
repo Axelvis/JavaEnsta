@@ -14,16 +14,15 @@ const TMDB_API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTY5YWU2ZTY0OGYwNGFiMjN
 
 export default function FilmCard(props) {
     const { film, onDelete, onEdit } = props;
-    const [posterUrl, setPosterUrl] = useState(null);
     const [trailerKey, setTrailerKey] = useState(null);
     const [movieId, setMovieId] = useState(null);
     const [openTrailer, setOpenTrailer] = useState(false);
 
-    // Effet pour récupérer l'image et l'ID du film via l'API
+    // Effet pour récupérer l'ID du film et la bande-annonce
     useEffect(() => {
-        const fetchPoster = async () => {
-            // Sécurité 1 : Si pas de titre, on ne fait rien
-            if (!film.titre) return;
+        const fetchTrailer = async () => {
+            // Ne chercher la bande-annonce que si le film a une affiche (donc ajouté via TMDB)
+            if (!film.posterUrl || !film.titre) return;
 
             try {
                 const query = encodeURIComponent(film.titre);
@@ -37,65 +36,35 @@ export default function FilmCard(props) {
                     }
                 });
 
-                // Sécurité 2 : Gestion des erreurs HTTP (404, 500, 401...)
-                // Si l'URL est mal formée ou le token invalide, response.ok sera false
-                if (!response.ok) {
-                    console.warn(`Erreur HTTP: ${response.status}`);
-                    setPosterUrl(null); // On s'assure qu'aucune image n'est affichée
-                    return; // On arrête l'exécution ici
-                }
-
-                const data = await response.json();
-
-                // Sécurité 3 : Vérification de la structure de la donnée
-                // On vérifie que 'results' existe, qu'il n'est pas vide, et que le premier élément a bien un chemin d'image
-                if (data.results && data.results.length > 0) {
-                    const movie = data.results[0];
-                    if (movie.poster_path) {
-                        setPosterUrl(`https://image.tmdb.org/t/p/w300${movie.poster_path}`);
-                    }
-                    setMovieId(movie.id); // Stocker l'ID du film pour récupérer la bande-annonce
-                } else {
-                    // Si le film est introuvable ou n'a pas d'image
-                    setPosterUrl(null);
-                }
-
-            } catch (error) {
-                // Sécurité 4 : Gestion des erreurs Réseau (Pas d'internet, DNS échec, etc.)
-                console.error("Erreur lors du fetch ou parsing JSON:", error);
-                setPosterUrl(null); // En cas de crash réseau, on n'affiche pas d'image
-            }
-        };
-
-        fetchPoster();
-    }, [film.titre]); // On relance si le titre change
-
-    // Effet pour récupérer la bande-annonce
-    useEffect(() => {
-        const fetchTrailer = async () => {
-            if (!movieId || trailerKey) return;
-
-            try {
-                const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?language=fr-FR`;
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${TMDB_API_TOKEN}`,
-                        'accept': 'application/json'
-                    }
-                });
-
                 if (!response.ok) return;
 
                 const data = await response.json();
-                
-                // Chercher une bande-annonce YouTube
-                const trailer = data.results?.find(
-                    video => video.type === 'Trailer' && video.site === 'YouTube'
-                );
-                
-                if (trailer) {
-                    setTrailerKey(trailer.key);
+
+                if (data.results && data.results.length > 0) {
+                    const movie = data.results[0];
+                    setMovieId(movie.id);
+
+                    // Récupérer la bande-annonce
+                    const videoUrl = `https://api.themoviedb.org/3/movie/${movie.id}/videos?language=fr-FR`;
+                    const videoResponse = await fetch(videoUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+                            'accept': 'application/json'
+                        }
+                    });
+
+                    if (!videoResponse.ok) return;
+
+                    const videoData = await videoResponse.json();
+                    
+                    const trailer = videoData.results?.find(
+                        video => video.type === 'Trailer' && video.site === 'YouTube'
+                    );
+                    
+                    if (trailer) {
+                        setTrailerKey(trailer.key);
+                    }
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération de la bande-annonce:", error);
@@ -103,7 +72,7 @@ export default function FilmCard(props) {
         };
 
         fetchTrailer();
-    }, [movieId, trailerKey]);
+    }, [film.titre, film.posterUrl]);
 
     const handleClickOnDeleteButton = () => {
         onDelete(film.id);
@@ -132,7 +101,7 @@ export default function FilmCard(props) {
             }}
         >
             {/* Affichage de l'affiche */}
-            {posterUrl ? (
+            {film.posterUrl ? (
                 <CardMedia
                     component="img"
                     sx={{ 
@@ -140,7 +109,7 @@ export default function FilmCard(props) {
                         width: '100%',
                         objectFit: 'cover'
                     }}
-                    image={posterUrl}
+                    image={film.posterUrl}
                     alt={`Affiche du film ${film.titre}`}
                 />
             ) : (

@@ -1,8 +1,7 @@
 package com.ensta.myfilmlist.form;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 
 /**
  * Contient les donnees pour requeter un film.
@@ -13,14 +12,14 @@ public class FilmForm {
     @NotBlank(message = "Le titre ne doit pas être vide.")
     private String titre;
     
-    // La durée doit être strictement positive (minimum 1)
-    @Positive(message = "La durée doit être strictement positive.")
-    // Alternative possible (si Positive n'est pas disponible ou si on veut être explicite): @Min(value = 1, message = "La durée doit être supérieure à zéro.")
+    // Champs pour film personnalisé
     private Integer duree;
-    
-    // L'ID du réalisateur doit être strictement positif (ID > 0)
-    @Min(value = 1, message = "L'ID du réalisateur doit être supérieur à zéro.")
-    private Long realisateurId;
+    private LocalDate dateSortie;
+    private String realisateurNom;
+    private String realisateurPrenom;
+    private String posterUrl;
+    private String trailerUrl;
+    private Boolean isCustom;
 
 	public String getTitre() {
 		return titre;
@@ -30,20 +29,60 @@ public class FilmForm {
 		this.titre = titre;
 	}
 
-	public int getDuree() {
+	public Integer getDuree() {
 		return duree;
 	}
 
-	public void setDuree(int duree) {
+	public void setDuree(Integer duree) {
 		this.duree = duree;
 	}
 
-	public long getRealisateurId() {
-		return realisateurId;
+	public LocalDate getDateSortie() {
+		return dateSortie;
 	}
 
-	public void setRealisateurId(long realisateurId) {
-		this.realisateurId = realisateurId;
+	public void setDateSortie(LocalDate dateSortie) {
+		this.dateSortie = dateSortie;
+	}
+
+	public String getRealisateurNom() {
+		return realisateurNom;
+	}
+
+	public void setRealisateurNom(String realisateurNom) {
+		this.realisateurNom = realisateurNom;
+	}
+
+	public String getRealisateurPrenom() {
+		return realisateurPrenom;
+	}
+
+	public void setRealisateurPrenom(String realisateurPrenom) {
+		this.realisateurPrenom = realisateurPrenom;
+	}
+
+	public String getPosterUrl() {
+		return posterUrl;
+	}
+
+	public void setPosterUrl(String posterUrl) {
+		this.posterUrl = posterUrl;
+	}
+
+	public String getTrailerUrl() {
+		return trailerUrl;
+	}
+
+	public void setTrailerUrl(String trailerUrl) {
+		this.trailerUrl = trailerUrl;
+	}
+
+	public Boolean getIsCustom() {
+		return isCustom;
+	}
+
+	public void setIsCustom(Boolean isCustom) {
+		this.isCustom = isCustom;
 	}
 
 }

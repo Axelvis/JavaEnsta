@@ -203,13 +203,8 @@ public class MyfilmlistTests {
 	 */
 	public void createFilmTest() {
 		try {
-			RealisateurDTO realisateur = myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James");
-
 			FilmForm titanic = new FilmForm();
 			titanic.setTitre("Titanic");
-			titanic.setDuree(195);
-			//titanic.setRealisateurId(realisateurDTO.getId());
-			titanic.setRealisateurId(realisateur.getId());
 
 			FilmDTO newFilm = myFilmsService.createFilm(titanic);
 
@@ -266,13 +261,9 @@ public class MyfilmlistTests {
 
 			FilmForm titanic = new FilmForm();
 			titanic.setTitre("Titanic");
-			titanic.setDuree(195);
-			titanic.setRealisateurId(realisateurDTO.getId());
 
 			FilmForm leHobbit = new FilmForm();
 			leHobbit.setTitre("Le Hobbit : Un voyage inattendu");
-			leHobbit.setDuree(169);
-			leHobbit.setRealisateurId(realisateurDTO.getId());
 
 			myFilmsService.createFilm(titanic);
 			FilmDTO leHobbitDTO = myFilmsService.createFilm(leHobbit);

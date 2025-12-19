@@ -2,6 +2,8 @@ package com.ensta.myfilmlist.model;
 
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Represente un Film.
@@ -16,6 +18,15 @@ public class Film {
 	
 	private String titre;
 	private int duree;
+	
+	@Column(name = "date_sortie")
+	private LocalDate dateSortie;
+	
+	@Column(name = "poster_url", length = 500)
+	private String posterUrl;
+	
+	@Column(name = "date_ajout")
+	private LocalDateTime dateAjout;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "realisateur_id")
@@ -63,6 +74,30 @@ public class Film {
 
 	public void setRealisateurId(long realisateurId) {
 		this.realisateurId = realisateurId;
+	}
+
+	public LocalDate getDateSortie() {
+		return dateSortie;
+	}
+
+	public void setDateSortie(LocalDate dateSortie) {
+		this.dateSortie = dateSortie;
+	}
+
+	public String getPosterUrl() {
+		return posterUrl;
+	}
+
+	public void setPosterUrl(String posterUrl) {
+		this.posterUrl = posterUrl;
+	}
+
+	public LocalDateTime getDateAjout() {
+		return dateAjout;
+	}
+
+	public void setDateAjout(LocalDateTime dateAjout) {
+		this.dateAjout = dateAjout;
 	}
 
 }
