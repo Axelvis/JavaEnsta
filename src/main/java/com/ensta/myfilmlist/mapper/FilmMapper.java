@@ -38,6 +38,9 @@ public class FilmMapper {
 		filmDTO.setDateSortie(film.getDateSortie());
 		filmDTO.setPosterUrl(film.getPosterUrl());
 		filmDTO.setDateAjout(film.getDateAjout());
+		filmDTO.setWatchProviders(film.getWatchProviders());
+		filmDTO.setRating(film.getRating());
+		filmDTO.setSynopsis(film.getSynopsis());
 
 		// 🎯 Conversion du réalisateur EN DTO
 		if (film.getRealisateur() != null) {

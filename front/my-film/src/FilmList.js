@@ -2,7 +2,7 @@ import React from 'react';
 import FilmCard from './FilmCard';
 
 export default function FilmList(props) {
-    const { films, onDelete, onEdit } = props;
+    const { films, onDelete, onEdit, onRatingChange, onRealisateurClick, onFilmClick } = props;
 
     return (
         <div style={{ 
@@ -18,6 +18,9 @@ export default function FilmList(props) {
                     film={film} 
                     onDelete={onDelete} 
                     onEdit={onEdit}
+                    onRatingChange={onRatingChange}
+                    onRealisateurClick={onRealisateurClick}
+                    onFilmClick={onFilmClick}
                 />
             ))}
         </div>

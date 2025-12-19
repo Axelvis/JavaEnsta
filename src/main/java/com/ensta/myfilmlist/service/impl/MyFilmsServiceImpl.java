@@ -220,6 +220,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                     film.setDuree(tmdbData.getDuree());
                     film.setDateSortie(tmdbData.getDateSortie());
                     film.setPosterUrl(tmdbData.getPosterUrl());
+                    film.setWatchProviders(tmdbData.getWatchProviders());
+                    film.setSynopsis(tmdbData.getSynopsis());
                     
                     if (realisateur != null) {
                         film.setRealisateur(realisateur);
@@ -262,6 +264,11 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             
             // Mettre à jour le titre
             existingFilm.setTitre(form.getTitre());
+            
+            // Mettre à jour la note si fournie
+            if (form.getRating() != null) {
+                existingFilm.setRating(form.getRating());
+            }
             
             // Si c'est un film personnalisé avec toutes les données
             if (form.getIsCustom() != null && form.getIsCustom()) {
@@ -314,6 +321,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                     existingFilm.setDuree(tmdbData.getDuree());
                     existingFilm.setDateSortie(tmdbData.getDateSortie());
                     existingFilm.setPosterUrl(tmdbData.getPosterUrl());
+                    existingFilm.setWatchProviders(tmdbData.getWatchProviders());
+                    existingFilm.setSynopsis(tmdbData.getSynopsis());
                     
                     if (realisateur != null) {
                         existingFilm.setRealisateur(realisateur);

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import FilmList from './FilmList';
-import CreateFilmForm from './CreateFilmForm';
+import CreateFilmForm from './CreateFilmForm'
 import FilmFilter from './FilmFilter';
+import FilmCard from './FilmCard';
+import RealisateurCard from './RealisateurCard';
 import { getAllFilms, postFilm, deleteFilm, putFilm } from './api/FilmApi';
 
-export default function FilmContainer() {
+export default function FilmContainer({ currentView, onViewChange, onRealisateurClick, onFilmClick, currentPopup, onClosePopup }) {
     const [films, setFilms] = useState([]);
     const [open, setOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
@@ -114,6 +116,10 @@ export default function FilmContainer() {
                 if (!a.dateAjout) return 1; // Les films sans date à la fin
                 if (!b.dateAjout) return -1;
                 return new Date(b.dateAjout) - new Date(a.dateAjout);
+            case 'rating-asc':
+                return (a.rating || 0) - (b.rating || 0);
+            case 'rating-desc':
+                return (b.rating || 0) - (a.rating || 0);
             default:
                 return 0;
         }
@@ -127,10 +133,19 @@ export default function FilmContainer() {
                 onSearchChange={setSearchTerm}
                 sortOption={sortOption}
                 onSortChange={setSortOption}
+                currentView={currentView}
+                onViewChange={onViewChange}
             />
             
             {/* On passe la liste filtrée et triée */}
-            <FilmList films={sortedFilms} onDelete={handleDeleteFilm} onEdit={handleOpenEdit} />
+            <FilmList 
+                films={sortedFilms} 
+                onDelete={handleDeleteFilm} 
+                onEdit={handleOpenEdit} 
+                onRatingChange={fetchFilms}
+                onRealisateurClick={onRealisateurClick}
+                onFilmClick={onFilmClick}
+            />
 
             {/* Bouton flottant pour créer un film */}
             <Fab 
@@ -163,6 +178,31 @@ export default function FilmContainer() {
                     <CreateFilmForm film={editingFilm} onSubmit={handleUpdateFilm} />
                 </DialogContent>
             </Dialog>
+
+            {/* Popup géré par la pile */}
+            {currentPopup && currentPopup.type === 'realisateur' && (
+                <RealisateurCard
+                    realisateur={films.flatMap(f => f.realisateur).find(r => r && r.id === currentPopup.id)}
+                    films={films}
+                    isPopupMode={true}
+                    onClose={onClosePopup}
+                    onFilmClick={onFilmClick}
+                />
+            )}
+            {currentPopup && currentPopup.type === 'film' && (() => {
+                const currentFilm = films.find(f => f.id === currentPopup.id);
+                return currentFilm ? (
+                    <FilmCard
+                        film={currentFilm}
+                        isPopupMode={true}
+                        onClose={onClosePopup}
+                        onDelete={handleDeleteFilm}
+                        onEdit={handleOpenEdit}
+                        onRatingChange={fetchFilms}
+                        onRealisateurClick={onRealisateurClick}
+                    />
+                ) : null;
+            })()}
         </div>
     );
 }

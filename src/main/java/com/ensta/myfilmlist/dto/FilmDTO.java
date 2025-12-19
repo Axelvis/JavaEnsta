@@ -20,6 +20,12 @@ public class FilmDTO {
 	
 	private LocalDateTime dateAjout;
 	
+	private String watchProviders;
+	
+	private Double rating;
+	
+	private String synopsis;
+	
 	private RealisateurDTO realisateur;
 
 	public long getId() {
@@ -76,6 +82,30 @@ public class FilmDTO {
 
 	public void setDateAjout(LocalDateTime dateAjout) {
 		this.dateAjout = dateAjout;
+	}
+	
+	public String getWatchProviders() {
+		return watchProviders;
+	}
+
+	public void setWatchProviders(String watchProviders) {
+		this.watchProviders = watchProviders;
+	}
+	
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
+	}
+	
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public void setSynopsis(String synopsis) {
+		this.synopsis = synopsis;
 	}
 	
 	@Override

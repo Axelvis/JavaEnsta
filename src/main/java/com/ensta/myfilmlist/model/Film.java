@@ -28,6 +28,15 @@ public class Film {
 	@Column(name = "date_ajout")
 	private LocalDateTime dateAjout;
 	
+	@Column(name = "watch_providers", length = 2000)
+	private String watchProviders;
+	
+	@Column(name = "rating")
+	private Double rating;
+	
+	@Column(name = "synopsis", columnDefinition = "TEXT")
+	private String synopsis;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "realisateur_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@JsonManagedReference
@@ -87,6 +96,30 @@ public class Film {
 
 	public void setDateAjout(LocalDateTime dateAjout) {
 		this.dateAjout = dateAjout;
+	}
+
+	public String getWatchProviders() {
+		return watchProviders;
+	}
+
+	public void setWatchProviders(String watchProviders) {
+		this.watchProviders = watchProviders;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
+	}
+
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public void setSynopsis(String synopsis) {
+		this.synopsis = synopsis;
 	}
 
 }

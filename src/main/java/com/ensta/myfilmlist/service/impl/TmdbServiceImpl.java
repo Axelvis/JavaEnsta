@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +89,14 @@ public class TmdbServiceImpl implements TmdbService {
                 filmData.setPosterUrl(TMDB_IMAGE_BASE_URL + movieDetails.get("poster_path").asText());
             }
             
+            // Synopsis
+            if (movieDetails.has("overview") && !movieDetails.get("overview").isNull()) {
+                filmData.setSynopsis(movieDetails.get("overview").asText());
+            }
+            
+            // Watch providers
+            filmData.setWatchProviders(getWatchProviders(movieId, headers));
+            
             // Réalisateurs
             List<TmdbDirector> directors = new ArrayList<>();
             JsonNode crew = credits.get("crew");
@@ -142,6 +149,50 @@ public class TmdbServiceImpl implements TmdbService {
             }
         } catch (Exception e) {
             // Si on ne peut pas récupérer la date, on retourne null
+        }
+        return null;
+    }
+    
+    private String getWatchProviders(int movieId, org.springframework.http.HttpHeaders headers) {
+        try {
+            String providersUrl = TMDB_MOVIE_DETAILS_URL + movieId + "/watch/providers";
+            org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(headers);
+            org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
+                providersUrl, 
+                org.springframework.http.HttpMethod.GET, 
+                entity, 
+                String.class
+            );
+            
+            JsonNode providersData = objectMapper.readTree(response.getBody());
+            JsonNode results = providersData.get("results");
+            
+            if (results == null || results.size() == 0) {
+                return null;
+            }
+            
+            // Récupérer les providers pour la France (FR)
+            JsonNode frProviders = results.get("FR");
+            if (frProviders == null) {
+                return null;
+            }
+            
+            StringBuilder providers = new StringBuilder();
+            
+            // Flatrate uniquement (streaming inclus dans abonnement - gratuit avec l'abonnement)
+            if (frProviders.has("flatrate")) {
+                JsonNode flatrate = frProviders.get("flatrate");
+                for (JsonNode provider : flatrate) {
+                    if (providers.length() > 0) providers.append(", ");
+                    providers.append(provider.get("provider_name").asText());
+                }
+            }
+            
+            return providers.length() > 0 ? providers.toString() : null;
+            
+        } catch (Exception e) {
+            // Si on ne peut pas récupérer les providers, on retourne null
+            System.out.println("Erreur lors de la récupération des watch providers: " + e.getMessage());
         }
         return null;
     }

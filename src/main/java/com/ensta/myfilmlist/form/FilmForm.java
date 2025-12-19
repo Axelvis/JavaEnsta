@@ -20,6 +20,7 @@ public class FilmForm {
     private String posterUrl;
     private String trailerUrl;
     private Boolean isCustom;
+    private Double rating;
 
 	public String getTitre() {
 		return titre;
@@ -83,6 +84,14 @@ public class FilmForm {
 
 	public void setIsCustom(Boolean isCustom) {
 		this.isCustom = isCustom;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 
 }

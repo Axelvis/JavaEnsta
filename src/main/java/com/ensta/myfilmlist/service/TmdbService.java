@@ -14,6 +14,8 @@ public interface TmdbService {
         private int duree;
         private LocalDate dateSortie;
         private String posterUrl;
+        private String watchProviders;
+        private String synopsis;
         private List<TmdbDirector> directors;
         
         public String getTitre() { return titre; }
@@ -27,6 +29,12 @@ public interface TmdbService {
         
         public String getPosterUrl() { return posterUrl; }
         public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
+        
+        public String getWatchProviders() { return watchProviders; }
+        public void setWatchProviders(String watchProviders) { this.watchProviders = watchProviders; }
+        
+        public String getSynopsis() { return synopsis; }
+        public void setSynopsis(String synopsis) { this.synopsis = synopsis; }
         
         public List<TmdbDirector> getDirectors() { return directors; }
         public void setDirectors(List<TmdbDirector> directors) { this.directors = directors; }

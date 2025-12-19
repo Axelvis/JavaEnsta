@@ -77,4 +77,15 @@ public class JdbcFilmDAO implements FilmDAO {
         return query.getResultList();
     }
 
+    @Override
+    public Film findByTitre(String titre) {
+        TypedQuery<Film> query = entityManager.createQuery(
+            "SELECT f FROM Film f WHERE f.titre LIKE :titre", 
+            Film.class
+        );
+        query.setParameter("titre", "%" + titre + "%");
+        List<Film> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
+
 }
