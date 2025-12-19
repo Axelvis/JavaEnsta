@@ -3,17 +3,18 @@ package com.ensta.myfilmlist.form;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
-/**
- * Contient les donnees pour requeter un film.
- */
 public class FilmForm {
 
-	// Le titre est non nul et non vide
     @NotBlank(message = "Le titre ne doit pas être vide.")
     private String titre;
     
-    // Champs pour film personnalisé
+    @Positive(message = "La durée doit être strictement positive.")
     private Integer duree;
+    
+    @Min(value = 1, message = "L'ID du réalisateur doit être supérieur à zéro.")
+    private Long realisateurId;
+    // Champs pour film personnalisé
+    //private Integer duree;
     private LocalDate dateSortie;
     private String realisateurNom;
     private String realisateurPrenom;

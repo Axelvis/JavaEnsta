@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Represente un Film.
- */
 @Entity
 @Table(name = "Film")
 public class Film {

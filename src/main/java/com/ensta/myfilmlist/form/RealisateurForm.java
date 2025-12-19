@@ -12,11 +12,8 @@ public class RealisateurForm {
     @NotBlank(message = "Le prénom est obligatoire")
     private String prenom;
 
-    // C'est cet attribut et ses getters/setters qui vous manquaient probablement
     @NotNull(message = "La date de naissance est obligatoire")
     private LocalDate dateNaissance;
-
-    // --- Getters et Setters ---
 
     public String getNom() {
         return nom;
@@ -34,7 +31,6 @@ public class RealisateurForm {
         this.prenom = prenom;
     }
 
-    // Voici la méthode que le Mapper cherchait :
     public LocalDate getDateNaissance() {
         return dateNaissance;
     }
