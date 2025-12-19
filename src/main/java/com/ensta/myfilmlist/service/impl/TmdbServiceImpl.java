@@ -48,8 +48,12 @@ public class TmdbServiceImpl implements TmdbService {
                 throw new ServiceException("Film non trouvé dans TMDB: " + titre);
             }
             
-            // Prendre le premier résultat
-            JsonNode movie = results.get(0);
+            // Trouver le meilleur résultat en comparant les titres
+            JsonNode movie = findBestMatch(results, titre);
+            if (movie == null) {
+                // Si aucune correspondance exacte, prendre le premier résultat
+                movie = results.get(0);
+            }
             int movieId = movie.get("id").asInt();
             
             // 2. Récupérer les détails du film
@@ -195,5 +199,74 @@ public class TmdbServiceImpl implements TmdbService {
             System.out.println("Erreur lors de la récupération des watch providers: " + e.getMessage());
         }
         return null;
+    }
+    
+    /**
+     * Trouve le meilleur résultat correspondant au titre recherché.
+     * Compare les titres en ignorant la casse et les caractères spéciaux.
+     */
+    private JsonNode findBestMatch(JsonNode results, String searchTitle) {
+        String normalizedSearchTitle = normalizeTitle(searchTitle);
+        
+        // 1. Chercher une correspondance exacte avec le titre (title)
+        for (JsonNode result : results) {
+            String title = result.has("title") ? result.get("title").asText() : "";
+            if (normalizeTitle(title).equals(normalizedSearchTitle)) {
+                return result;
+            }
+        }
+        
+        // 2. Chercher une correspondance exacte avec le titre original (original_title)
+        for (JsonNode result : results) {
+            String originalTitle = result.has("original_title") ? result.get("original_title").asText() : "";
+            if (normalizeTitle(originalTitle).equals(normalizedSearchTitle)) {
+                return result;
+            }
+        }
+        
+        // 3. Chercher une correspondance partielle (le titre recherché est contenu dans le résultat)
+        for (JsonNode result : results) {
+            String title = result.has("title") ? result.get("title").asText() : "";
+            String originalTitle = result.has("original_title") ? result.get("original_title").asText() : "";
+            
+            if (normalizeTitle(title).contains(normalizedSearchTitle) || 
+                normalizeTitle(originalTitle).contains(normalizedSearchTitle)) {
+                return result;
+            }
+        }
+        
+        // Si aucune correspondance, retourner null (le premier résultat sera utilisé)
+        return null;
+    }
+    
+    /**
+     * Normalise un titre pour la comparaison en :
+     * - Convertissant en minuscules
+     * - Supprimant les accents
+     * - Supprimant les caractères spéciaux (sauf espaces)
+     */
+    private String normalizeTitle(String title) {
+        if (title == null) return "";
+        
+        // Convertir en minuscules
+        String normalized = title.toLowerCase();
+        
+        // Remplacer les caractères accentués
+        normalized = normalized.replaceAll("[àáâãäå]", "a")
+                               .replaceAll("[èéêë]", "e")
+                               .replaceAll("[ìíîï]", "i")
+                               .replaceAll("[òóôõö]", "o")
+                               .replaceAll("[ùúûü]", "u")
+                               .replaceAll("[ýÿ]", "y")
+                               .replaceAll("[ç]", "c")
+                               .replaceAll("[ñ]", "n");
+        
+        // Supprimer les caractères spéciaux (garder lettres, chiffres et espaces)
+        normalized = normalized.replaceAll("[^a-z0-9\\s]", "");
+        
+        // Supprimer les espaces multiples et trim
+        normalized = normalized.replaceAll("\\s+", " ").trim();
+        
+        return normalized;
     }
 }

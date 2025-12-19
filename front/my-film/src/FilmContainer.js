@@ -32,6 +32,7 @@ export default function FilmContainer({ currentView, onViewChange, onRealisateur
 
     // Gestion de la création
     const handleCreateFilm = (newFilm) => {
+        console.log('Film à créer:', newFilm);
         postFilm(newFilm)
             .then(() => {
                 fetchFilms(); // Rafraichir la liste après création
@@ -39,6 +40,7 @@ export default function FilmContainer({ currentView, onViewChange, onRealisateur
             })
             .catch(err => {
                 console.error("Erreur création", err);
+                console.error("Détails erreur:", err.response?.data);
                 if (err.response && err.response.data && err.response.data.message) {
                     alert(err.response.data.message);
                 } else {

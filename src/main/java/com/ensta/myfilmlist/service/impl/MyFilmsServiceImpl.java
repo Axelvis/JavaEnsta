@@ -166,7 +166,18 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             if (form.getIsCustom() != null && form.getIsCustom()) {
                 // Créer ou récupérer le réalisateur
                 Realisateur realisateur = null;
-                if (form.getRealisateurNom() != null && form.getRealisateurPrenom() != null) {
+                
+                // Cas 1 : ID de réalisateur existant fourni
+                if (form.getRealisateurId() != null) {
+                    Optional<Realisateur> realisateurOpt = realisateurDAO.findById(form.getRealisateurId());
+                    if (realisateurOpt.isPresent()) {
+                        realisateur = realisateurOpt.get();
+                    } else {
+                        throw new ServiceException("Le réalisateur avec l'ID " + form.getRealisateurId() + " n'existe pas.");
+                    }
+                }
+                // Cas 2 : Nom et prénom fournis (nouveau réalisateur ou recherche)
+                else if (form.getRealisateurNom() != null && form.getRealisateurPrenom() != null) {
                     Realisateur existingReal = realisateurDAO.findByNomAndPrenom(
                         form.getRealisateurNom(), 
                         form.getRealisateurPrenom()
@@ -179,6 +190,9 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                         Realisateur newReal = new Realisateur();
                         newReal.setNom(form.getRealisateurNom());
                         newReal.setPrenom(form.getRealisateurPrenom());
+                        if (form.getRealisateurDateNaissance() != null) {
+                            newReal.setDateNaissance(form.getRealisateurDateNaissance());
+                        }
                         newReal.setCelebre(false);
                         realisateur = realisateurDAO.save(newReal);
                     }
@@ -188,6 +202,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                 film.setDuree(form.getDuree());
                 film.setDateSortie(form.getDateSortie());
                 film.setPosterUrl(form.getPosterUrl());
+                film.setSynopsis(form.getSynopsis());
                 
                 if (realisateur != null) {
                     film.setRealisateur(realisateur);
