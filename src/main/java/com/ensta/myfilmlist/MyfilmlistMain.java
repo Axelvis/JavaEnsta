@@ -4,9 +4,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.ensta.myfilmlist.persistence.ConnectionManager;
 
-/**
- * Classe principale pour executer un traitement et s'arreter ensuite.
- */
+
 public class MyfilmlistMain {
 
 	public static void main(String[] args) {
