@@ -24,7 +24,6 @@ public class RealisateurControllerImpl implements RealisateurController {
     @Autowired
     private RealisateurService realisateurService;
 
-    // --- 1. GET ALL ---
     @Override
     public ResponseEntity<List<RealisateurDTO>> getAllRealisateurs() throws ControllerException {
         try {
@@ -35,7 +34,6 @@ public class RealisateurControllerImpl implements RealisateurController {
         }
     }
 
-    // --- 2. GET BY ID ---
     @Override
     public ResponseEntity<RealisateurDTO> getRealisateurById(long id) throws ControllerException {
         try {
@@ -49,7 +47,6 @@ public class RealisateurControllerImpl implements RealisateurController {
         }
     }
 
-    // --- 3. POST (Création) ---
     @Override
     public ResponseEntity<RealisateurDTO> createRealisateur(@Valid RealisateurForm realisateurForm) throws ControllerException {
         try {
