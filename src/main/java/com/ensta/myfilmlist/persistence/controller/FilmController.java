@@ -24,7 +24,6 @@ import java.util.List;
 @Tag(name = "Film", description = "Opération sur les films")
 public interface FilmController {
     
-    // Documenation Swagger getAllFilms()
     @GetMapping
     @ApiOperation(
         value = "Lister les films", 
@@ -37,7 +36,6 @@ public interface FilmController {
     ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException;
 
     
-    // Doc getFilmById()
     @GetMapping("/{id}")
     @ApiOperation(
         value = "Récupérer un film par ID",
@@ -51,14 +49,7 @@ public interface FilmController {
     ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) throws ControllerException;
 
 
-    /** 
-    * Crée un nouveau film dans la base de données.
-     * Le code HTTP de retour est 201 (Created).
-     * @param filmForm Le formulaire contenant les données du nouveau film.
-     * @return ResponseEntity contenant le FilmDTO créé avec son identifiant.
-     * @throws ControllerException En cas d'erreur de traitement.
-     */
-    @PostMapping // Mapping pour répondre aux requêtes HTTP POST sur /film
+    @PostMapping
     @ApiOperation(
         value = "Créer un film",
         notes = "Crée un nouveau film et renvoie le film créé.",
@@ -70,14 +61,6 @@ public interface FilmController {
     })
     ResponseEntity<FilmDTO> createFilm(@RequestBody FilmForm filmForm) throws ControllerException;
 
-    /**
-     * Met à jour un film existant dans la base de données.
-     * Le code HTTP de retour est 200 (OK).
-     * @param id L'identifiant du film à mettre à jour.
-     * @param filmForm Le formulaire contenant les données du film.
-     * @return ResponseEntity contenant le FilmDTO mis à jour.
-     * @throws ControllerException En cas d'erreur de traitement.
-     */
     @PutMapping("/{id}")
     @ApiOperation(
         value = "Mettre à jour un film",
@@ -90,14 +73,7 @@ public interface FilmController {
     })
     ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) throws ControllerException;
 
-/**
-     * Supprime un film de la base de données via son identifiant.
-     * Le code HTTP de retour est 204 (No Content).
-     * @param id L'identifiant du film à supprimer.
-     * @return ResponseEntity vide (pas de corps) avec le statut 204.
-     * @throws ControllerException En cas d'erreur de traitement.
-     */
-    @DeleteMapping("/{id}") // Mapping pour répondre aux requêtes HTTP DELETE sur /film/{id}
+    @DeleteMapping("/{id}")
     @ApiOperation(
         value = "Supprimer un film par ID",
         notes = "Supprime un film spécifique en utilisant son identifiant.",
