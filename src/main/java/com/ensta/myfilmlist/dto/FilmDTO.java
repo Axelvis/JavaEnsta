@@ -3,9 +3,7 @@ package com.ensta.myfilmlist.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Contient les donnees d'un Film.
- */
+
 public class FilmDTO {
 
 	private long id;
