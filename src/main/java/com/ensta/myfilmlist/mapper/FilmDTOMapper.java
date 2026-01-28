@@ -5,9 +5,6 @@ import com.ensta.myfilmlist.model.Film;
 
 public class FilmDTOMapper {
 
-    /**
-     * Convertit Film -> FilmDTO
-     */
     public static FilmDTO convertFilmToFilmDTO(Film film) {
         if (film == null) {
             return null;
@@ -25,9 +22,6 @@ public class FilmDTOMapper {
         return dto;
     }
 
-    /**
-     * Convertit FilmDTO -> Film (objet métier)
-     */
     public static Film convertFilmDTOToFilm(FilmDTO dto) {
         if (dto == null) {
             return null;
